@@ -53,9 +53,16 @@ if "location" not in st.session_state:
 
 # --------------------------- GOOGLE SHEET ---------------------------
 def get_gsheet():
+    import base64
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
-    client = gspread.authorize(creds)
+
+    # Decode from Streamlit Secrets
+    encoded_key = st.secrets["google"]["service_account_base64"]
+    decoded_key = base64.b64decode(encoded_key).decode("utf-8")
+    creds_dict = json.loads(decoded_key)
+
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+    client = gspread.authorize(credentials)
     sheet = client.open("Daily_Expense_Data").sheet1
     return sheet
 
