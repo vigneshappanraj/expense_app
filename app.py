@@ -121,10 +121,16 @@ elif st.session_state.step == 2:
 # --------------------------- STEP 3: PAYMENT ---------------------------
 elif st.session_state.step == 3:
     st.subheader("💳 Mode of Payment")
-    payment = st.radio("Choose:", ["BHIM", "Google Pay", "Cash"], key="pay_radio")
-    if payment:
-        st.session_state.payment = payment
-        st.session_state.step = 4
+    payment = st.radio("Choose:", ["BHIM", "Google Pay", "Cash"], key="pay_radio", index=None)
+
+    if st.button("Next ➡️", key="payment_next"):
+        selected_payment = st.session_state.get("pay_radio")
+        if selected_payment:
+            st.session_state.payment = selected_payment
+            st.session_state.step = 4
+            st.rerun()
+        else:
+            st.error("Please select a payment mode first!")
 
 # --------------------------- STEP 4: AMOUNT ---------------------------
 elif st.session_state.step == 4:
